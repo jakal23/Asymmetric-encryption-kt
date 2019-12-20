@@ -35,27 +35,33 @@ object KeyStore {
         }
     }
 
-    private fun write(key: String, file: File){
-        val buffer = CharArray(computeBufferSize(key))
+    private fun write(key: String, file: File, minLineLength: Int = 40, maxLineLength: Int = 64){
+        val bufferSize = computeBufferSize(key, maxLineLength)
+            .takeIf { it in minLineLength..maxLineLength }
+            ?:maxLineLength
+
+        val buffer = CharArray(bufferSize)
         val writer = FileWriter(file)
 
         val reader = key.reader()
+        var chars = reader.read(buffer)
 
-        while (reader.read(buffer) > 0){
-            writer.write(buffer)
+        while (chars >= 0) {
+            writer.write(buffer, 0, chars)
             writer.write("\n")
+            chars = reader.read(buffer)
         }
 
         writer.flush()
         writer.close()
     }
 
-    private fun computeBufferSize(key: String): Int {
+    private fun computeBufferSize(key: String, maxBufferSize: Int): Int {
         var bufferSize = key.length
         println(bufferSize)
 
         allDividers(bufferSize){ number, _->
-            val isValid = number < 60
+            val isValid = number < maxBufferSize
             if (isValid){
                 bufferSize = number
             }
