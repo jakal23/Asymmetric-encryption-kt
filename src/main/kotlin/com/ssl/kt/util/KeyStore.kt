@@ -1,5 +1,6 @@
-package com.ssl.kt
+package com.ssl.kt.util
 
+import com.ssl.kt.Config
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -23,11 +24,11 @@ object KeyStore {
         return lines.joinToString("")
     }
 
-    fun writeWithNote(key: String, fileName: String, note: String){
+    fun writeWithNote(key: String, fileName: String, note: EndLineString){
         write(key, fileName, note)
     }
 
-    fun write(key: String, fileName: String, note: String? = null){
+    fun write(key: String, fileName: String, note: EndLineString? = null){
         val dir = File(Config.dir)
         if (dir.exists() && dir.isDirectory){
             write(key, File(dir, fileName), note)
@@ -39,7 +40,7 @@ object KeyStore {
         }
     }
 
-    private fun write(key: String, file: File, note: String? = null, minLineLength: Int = 40, maxLineLength: Int = 64){
+    private fun write(key: String, file: File, note: EndLineString? = null, minLineLength: Int = 40, maxLineLength: Int = 64){
         val bufferSize = computeBufferSize(key, maxLineLength)
             .takeIf { it in minLineLength..maxLineLength }
             ?:maxLineLength
@@ -50,7 +51,7 @@ object KeyStore {
         val reader = key.reader()
         var chars = reader.read(buffer)
 
-        note?.let { writer.write("-----BEGIN $note-----\n") }
+        note?.let { writer.write(note.begin) }
 
         while (chars >= 0) {
             writer.write(buffer, 0, chars)
@@ -58,7 +59,7 @@ object KeyStore {
             chars = reader.read(buffer)
         }
 
-        note?.let { writer.write("-----END $note-----\n") }
+        note?.let { writer.write(note.end) }
 
         writer.flush()
         writer.close()
@@ -67,7 +68,7 @@ object KeyStore {
     private fun computeBufferSize(key: String, maxBufferSize: Int): Int {
         var bufferSize = key.length
 
-        allDividers(bufferSize){ number, _->
+        SimpleNumber.allDividers(bufferSize){ number, _->
             val isValid = number < maxBufferSize
             if (isValid){
                 bufferSize = number
@@ -78,28 +79,5 @@ object KeyStore {
         return bufferSize
     }
 
-    private fun allDividers(size: Int, block:(number: Int, coefficient: Int)->Boolean) {
-        var coefficient = 1
-        var number = size
 
-        while(true){
-            val firstDivider = findFirstDivider(number)
-            if (firstDivider == 1)
-                break
-            coefficient *= (number / firstDivider)
-            number = firstDivider
-            if (block(number, coefficient))
-                break
-        }
-
-    }
-
-    private fun findFirstDivider(bufferSize: Int): Int {
-        for ( i in 2..bufferSize){
-            if (bufferSize % i == 0){
-                return bufferSize / i
-            }
-        }
-        return 1
-    }
 }

@@ -1,5 +1,8 @@
 package com.ssl.kt
 
+import com.ssl.kt.util.EndLineString
+import com.ssl.kt.util.KeyStore
+
 object KeyStoreHelper {
 
     fun retrieveEncodedKeys(): Pair<String, String> {
@@ -28,6 +31,6 @@ object KeyStoreHelper {
 
         KeyStore.write(encodedPublicKey, Config.publicKeyName)
         KeyStore.write(encodedPrivateKey, Config.privateKeyName)
-        KeyStore.writeWithNote(certificate, Config.certificateName, "CERTIFICATE")
+        KeyStore.writeWithNote(certificate, Config.certificateName, EndLineString.certificate)
     }
 }
