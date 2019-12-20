@@ -30,15 +30,13 @@ class AsymmetricEncryption(keySize: Int, algorithm: CipherHelper.Algorithm) {
         val validityBeginDate = Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1))
         val validityEndDate = Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(5 * 365))
 
-        val dnName = X500Name("CN=Iohouse")
-
         // GENERATE THE X509 CERTIFICATE
         val certBuilder = X509v3CertificateBuilder(
-            dnName,
+            X500Name(Config.issuer),
             BigInteger.valueOf(System.currentTimeMillis()),
             validityBeginDate,
             validityEndDate,
-            dnName,
+            X500Name(Config.subject),
             SubjectPublicKeyInfo.getInstance(keyPair.public.encoded)
         )
         val builder = JcaContentSignerBuilder("SHA256withRSA")

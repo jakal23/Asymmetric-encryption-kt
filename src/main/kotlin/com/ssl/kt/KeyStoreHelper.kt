@@ -28,6 +28,6 @@ object KeyStoreHelper {
 
         KeyStore.write(encodedPublicKey, Config.publicKeyName)
         KeyStore.write(encodedPrivateKey, Config.privateKeyName)
-        KeyStore.write(certificate, Config.certificateName)
+        KeyStore.writeWithNote(certificate, Config.certificateName, "CERTIFICATE")
     }
 }

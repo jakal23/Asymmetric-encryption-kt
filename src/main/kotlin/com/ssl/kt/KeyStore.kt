@@ -23,19 +23,23 @@ object KeyStore {
         return lines.joinToString("")
     }
 
-    fun write(key: String, fileName: String){
+    fun writeWithNote(key: String, fileName: String, note: String){
+        write(key, fileName, note)
+    }
+
+    fun write(key: String, fileName: String, note: String? = null){
         val dir = File(Config.dir)
         if (dir.exists() && dir.isDirectory){
-            write(key, File(dir, fileName))
+            write(key, File(dir, fileName), note)
         }else if (!dir.exists()){
             dir.mkdir()
-            write(key, File(dir, fileName))
+            write(key, File(dir, fileName), note)
         }else{
             throw RuntimeException("Please set a valid directory.")
         }
     }
 
-    private fun write(key: String, file: File, minLineLength: Int = 40, maxLineLength: Int = 64){
+    private fun write(key: String, file: File, note: String? = null, minLineLength: Int = 40, maxLineLength: Int = 64){
         val bufferSize = computeBufferSize(key, maxLineLength)
             .takeIf { it in minLineLength..maxLineLength }
             ?:maxLineLength
@@ -46,11 +50,15 @@ object KeyStore {
         val reader = key.reader()
         var chars = reader.read(buffer)
 
+        note?.let { writer.write("-----BEGIN $note-----\n") }
+
         while (chars >= 0) {
             writer.write(buffer, 0, chars)
             writer.write("\n")
             chars = reader.read(buffer)
         }
+
+        note?.let { writer.write("-----END $note-----\n") }
 
         writer.flush()
         writer.close()

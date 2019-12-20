@@ -7,6 +7,9 @@ object Config {
     const val privateKeyName = "private_key.pr"
     const val certificateName = "certificate.cer"
 
+    const val issuer = "CN=Vahe Gharibyan"
+    const val subject = "CN=IoHouse, OU=Developers, O=ATCC C=Armenia"
+
     const val size = 2048
     const val padding = "PKCS1Padding"
     val algorithm = CipherHelper.Algorithm.RSA
