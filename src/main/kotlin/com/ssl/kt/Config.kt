@@ -3,8 +3,9 @@ package com.ssl.kt
 object Config {
 
     const val dir = "./keys"
-    const val publicKeyName = "public_key.pb"
-    const val privateKeyName = "private_key.pr"
+    const val defLineLength = 64
+    const val publicKeyName = "public_key.cer"
+    const val privateKeyName = "private_key.cer"
     const val certificateName = "certificate.cer"
 
     const val issuer = "CN=Vahe Gharibyan"

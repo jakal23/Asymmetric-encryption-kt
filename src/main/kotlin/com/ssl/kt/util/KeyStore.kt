@@ -40,10 +40,10 @@ object KeyStore {
         }
     }
 
-    private fun write(key: String, file: File, note: EndLineString? = null, minLineLength: Int = 40, maxLineLength: Int = 64){
-        val bufferSize = computeBufferSize(key, maxLineLength)
-            .takeIf { it in minLineLength..maxLineLength }
-            ?:maxLineLength
+    private fun write(key: String, file: File, note: EndLineString? = null, minLineLength: Int = 40){
+        val bufferSize = computeBufferSize(key, Config.defLineLength)
+            .takeIf { it in minLineLength..Config.defLineLength }
+            ?:Config.defLineLength
 
         val buffer = CharArray(bufferSize)
         val writer = FileWriter(file)
@@ -65,11 +65,11 @@ object KeyStore {
         writer.close()
     }
 
-    private fun computeBufferSize(key: String, maxBufferSize: Int): Int {
+    private fun computeBufferSize(key: String, maxLineLength: Int): Int {
         var bufferSize = key.length
 
         SimpleNumber.allDividers(bufferSize){ number, _->
-            val isValid = number < maxBufferSize
+            val isValid = number < maxLineLength
             if (isValid){
                 bufferSize = number
             }

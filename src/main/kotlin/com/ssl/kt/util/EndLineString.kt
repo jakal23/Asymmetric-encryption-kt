@@ -8,5 +8,7 @@ class EndLineString(text: String) {
 
     companion object{
         val certificate = EndLineString("CERTIFICATE")
+        val privateKey = EndLineString("PRIVATE KEY")
+        val publicKey = EndLineString("PUBLIC KEY")
     }
 }
