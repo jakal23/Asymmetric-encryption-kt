@@ -58,7 +58,6 @@ object KeyStore {
 
     private fun computeBufferSize(key: String, maxBufferSize: Int): Int {
         var bufferSize = key.length
-        println(bufferSize)
 
         allDividers(bufferSize){ number, _->
             val isValid = number < maxBufferSize
